@@ -4,6 +4,12 @@ import random
 from tkinter import messagebox as mbox
 import sqlite3
 
+
+
+database= 'user.db'
+conn = sqlite3.connect(database)
+cur = conn.cursor()
+
 #色の宣言
 color = "white"
 
@@ -12,13 +18,23 @@ def shutdown():
     shut_msg = mbox.showinfo('通知','アプリケーションを終了します。')
     exit()
 
-#送信を押された時の処理
 def send():
-    #送信のために、取得
-    Eun_get = Eun.get()
-    Epw_get = Epw.get()
+    pass
+
+#送信を押された時の処理
+def send_new(user_new,pass_new):
     
-    #ターミナルでの表示
+    user_sele = []
+    for i in cur.execute('select * from user_info'):
+        user_sele0 = i[0]
+        user_sele.append(user_sele0)
+
+    if user_new in user_sele:
+        new_err = mbox.showerror(title='警告',message='すでに{}が存在します。'.format(user_sele))    
+
+    else:    
+        cur.execute('insert into user_info (username, password) values(?,?)',(user_new,pass_new))
+        conn.commit()
 
 
 #ヘルプページ
@@ -93,18 +109,14 @@ def newaccount():
     send_button = tk.Button(newaccount_root, bg = color, text = "送信" )
     send_button.pack(fill = "x", padx = 10, pady = 10, side = 'bottom')
 
-    send_button ["command"] = send
+    user_new = Eun_new.get()
+    pass_new = Epw_new.get()
 
-    #sqlite3のデータベース（ユーザーデータ）
-    #database = "user.db"
-    #connect = sqlite3.connect(database)
-    #uscu = connect.cursor()
-    #username = input("username:")
-    #password = input("password:")
+    
 
-    #uscu.execute('insert into userdata (username,password) values(?,?)', (username,password))
-    #connect.commit()
-    #connect.close()
+
+    send_button ["command"] = lambda : send_new(user_new,pass_new)
+
 
 #忘れた（データベース使用）
 def forget():
@@ -174,4 +186,6 @@ send_button.pack(fill = "x", padx = 10, pady = 10, side = 'bottom')
 
 send_button ["command"] = send
 
+
 root.mainloop()
+conn.close()
