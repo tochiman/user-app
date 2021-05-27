@@ -1,3 +1,5 @@
+#-*- coding: utf8 -*-
+
 import tkinter as tk
 import time
 import random
@@ -23,14 +25,16 @@ def send():
 
 #送信を押された時の処理
 def send_new(user_new,pass_new):
-    
+    print(user_new)
     user_sele = []
     for i in cur.execute('select * from user_info'):
         user_sele0 = i[0]
         user_sele.append(user_sele0)
+        print(user_sele0)
+
 
     if user_new in user_sele:
-        new_err = mbox.showerror(title='警告',message='すでに{}が存在します。'.format(user_sele))    
+        new_err = mbox.showerror(title='警告',message='すでに{}が存在します。'.format(user_new))    
 
     else:    
         cur.execute('insert into user_info (username, password) values(?,?)',(user_new,pass_new))
@@ -40,7 +44,7 @@ def send_new(user_new,pass_new):
 #ヘルプページ
 def help_page():
 
-    help_root = tk.Tk()
+    help_root = tk.Toplevel(root)
     help_root.title('ヘルプページ')
     help_root.geometry("500x200+750+350")
     help_root.option_add('*font',['MS ゴシック',10])
@@ -57,7 +61,7 @@ def help_page():
 
 #アップデート情報ページ
 def details_page():
-    details_root = tk.Tk()
+    details_root = tk.Toplevel(root)
     details_root.title('アップデート情報')
     details_root.geometry("440x200+750+300")
     details_root.option_add('*font',['MS ゴシック',10])
@@ -71,7 +75,14 @@ def details_page():
 
 #アカウント新規作成（データベース使用）
 def newaccount():
-    newaccount_root = tk.Tk()
+
+    def delete1_new():
+        Eun_new.delete(0, tk.END)
+    
+    def delete2_new():
+        Epw_new.delete(0, tk.END)
+
+    newaccount_root = tk.Toplevel(root)
     newaccount_root.title('アカウント新規作成')
     newaccount_root.geometry('440x200+750+400')
     newaccount_root.option_add('*font',['メイリオ',10])
@@ -96,14 +107,14 @@ def newaccount():
     delete_button1 = tk.Button(newaccount_root, bg = color, text = "取り消し")
     delete_button1.place(x = 350, y = 60)
 
-    delete_button1 ["command"] = delete1
+    delete_button1 ["command"] = delete1_new
 
 
     #取り消しボタン(password)作成
     delete_button2 = tk.Button(newaccount_root, bg = color, text = "取り消し")
     delete_button2.place(x = 350, y = 100)
 
-    delete_button2 ["command"] = delete2
+    delete_button2 ["command"] = delete2_new
 
     #送信ボタン作成
     send_button = tk.Button(newaccount_root, bg = color, text = "送信" )
@@ -112,15 +123,12 @@ def newaccount():
     user_new = Eun_new.get()
     pass_new = Epw_new.get()
 
-    
-
-
     send_button ["command"] = lambda : send_new(user_new,pass_new)
 
 
 #忘れた（データベース使用）
 def forget():
-    forget_root = tk.Tk()
+    forget_root = tk.Toplevel(root)
     forget_root.title('アカウント復旧')
     forget_root.geometry("440x200+750+300")
     forget_root.option_add('*font',['MS ゴシック',10])
