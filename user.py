@@ -1,6 +1,7 @@
 #-*- coding: utf8 -*-
 
 import tkinter as tk
+from tkinter import *
 import time
 import random
 from tkinter import messagebox as mbox
@@ -25,7 +26,7 @@ def send():
 
 #送信を押された時の処理
 def send_new(user_new,pass_new):
-    print(user_new)
+
     user_sele = []
     for i in cur.execute('select * from user_info'):
         user_sele0 = i[0]
@@ -39,6 +40,7 @@ def send_new(user_new,pass_new):
     else:    
         cur.execute('insert into user_info (username, password) values(?,?)',(user_new,pass_new))
         conn.commit()
+        new_sus = mbox.showinfo(title='成功',message='アカウントを新規作成することができました。')
 
 
 #ヘルプページ
@@ -120,11 +122,10 @@ def newaccount():
     send_button = tk.Button(newaccount_root, bg = color, text = "送信" )
     send_button.pack(fill = "x", padx = 10, pady = 10, side = 'bottom')
 
-    user_new = Eun_new.get()
-    pass_new = Epw_new.get()
+    Eun_new = StringVar(Eun_new.get())
+    Epw_new = StringVar(Epw_new.get())
 
-    send_button ["command"] = lambda : send_new(user_new,pass_new)
-
+    send_button ["command"] = lambda  : send_new(Eun_new,Epw_new)
 
 #忘れた（データベース使用）
 def forget():
